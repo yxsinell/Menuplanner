@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lozano's Food - Menú Semanal</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        textarea {
+            resize: none;
+            width: 100%;
+            min-height: 120px; /* Aumenté la altura */
+            padding: 10px;
+            font-size: 1rem;
+            overflow: hidden;
+        }
+        body {
+            background-image: linear-gradient(to bottom right, #f9fafb, #d1fae5);
+        }
+        .shopping-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        .shopping-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+        }
+        #shoppingList {
+            max-height: none;
+            overflow: visible;
+        }
+        .fun-title {
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Fuente más divertida */
+            color: #2d3748; /* Color más amigable */
+        }
+    </style>
+</head>
+<body class="bg-green-50">
+    <div class="container mx-auto p-4">
+        <h1 class="text-5xl fun-title text-center mb-8">Lozano's Food 🍽️</h1>
+
+        <div class="mb-4 text-center">
+            <button id="generateBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Generar sugerencias saludables 🍏</button>
+            <button id="clearBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ml-4">Limpiar todo ❌</button>
+            <button id="printBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ml-4">Imprimir menú y lista de la compra 🖨️</button>
+        </div>
+
+        <table class="table-auto w-full border-collapse border border-gray-400 mb-8">
+            <thead>
+                <tr class="bg-green-200">
+                    <th class="border border-gray-300 px-4 py-2">Comida/Día</th>
+                    <th class="border border-gray-300 px-4 py-2">Lunes</th>
+                    <th class="border border-gray-300 px-4 py-2">Martes</th>
+                    <th class="border border-gray-300 px-4 py-2">Miércoles</th>
+                    <th class="border border-gray-300 px-4 py-2">Jueves</th>
+                    <th class="border border-gray-300 px-4 py-2">Viernes</th>
+                    <th class="border border-gray-300 px-4 py-2">Sábado</th>
+                    <th class="border border-gray-300 px-4 py-2">Domingo</th>
+                </tr>
+            </thead>
+            <tbody id="menuTable">
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 text-center bg-yellow-100">Desayuno 🥐</td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 text-center bg-yellow-100">Comida 🍽️</td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 text-center bg-yellow-100">Merienda 🍪</td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2 text-center bg-yellow-100">Cena 🌙</td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                    <td><textarea readonly></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="mt-8">
+            <h2 class="text-3xl font-bold mb-4 text-green-700">Lista de la compra 🛒</h2>
+            <div id="shoppingList" class="w-full border border-gray-300 rounded-md p-2"></div>
+        </div>
+
+        <script>
+            const suggestions = {
+                desayuno: [
+                    "Arepas con queso y jamón",
+                    "Tostadas con tomate y aceite de oliva",
+                    "Smoothie de frutas tropicales",
+                    "Empanadas venezolanas",
+                    "Cereal con leche",
+                    "Tortilla española",
+                    "Pan con aguacate 🥑",
+                    "Huevos revueltos con arepas",
+                    "Yogur con frutas y miel 🍯",
+                    "Batido de fresas 🍓",
+                    "Pancakes con sirope de arce 🥞",
+                    "Café con leche y tostadas ☕"
+                ],
+                comida: [
+                    "Pabellón criollo",
+                    "Arroz a la cubana",
+                    "Pollo al horno con papas",
+                    "Lentejas con arroz 🍚",
+                    "Pollo guisado",
+                    "Pasta con atún",
+                    "Ensalada mixta 🥗",
+                    "Sancocho venezolano",
+                    "Fideuá de marisco 🍤",
+                    "Carne mechada con arroz",
+                    "Guiso de garbanzos",
+                    "Pescado al horno con verduras 🐟"
+                ],
+                merienda: [
+                    "Frutas frescas (mango, plátano, manzana)",
+                    "Nueces y almendras",
+                    "Galletas de avena",
+                    "Yogur con granola",
+                    "Tostadas con mermelada",
+                    "Arepitas dulces",
+                    "Batido de frutas",
+                    "Barra de cereal",
+                    "Palitos de zanahoria con hummus 🥕",
+                    "Smoothie verde 🍏",
+                    "Churros con chocolate 🍫",
+                    "Queso fresco con miel"
+                ],
+                cena: [
+                    "Sopa de pollo con fideos",
+                    "Tortilla de patatas",
+                    "Arepas rellenas de pollo",
+                    "Ensalada de atún",
+                    "Sandwich mixto 🥪",
+                    "Pasta con verduras",
+                    "Crema de calabacín",
+                    "Omelette de champiñones 🍄",
+                    "Sopa de tomate",
+                    "Papas al horno con queso 🧀",
+                    "Ensalada César",
+                    "Tostadas con aguacate y salmón"
+                ]
+            };
+
+            const shoppingItems = {
+                // Desayuno
+                "Arepas con queso y jamón": ["🌽 Harina de maíz", "🧀 Queso", "🥓 Jamón"],
+                "Tostadas con tomate y aceite de oliva": ["🍞 Pan", "🍅 Tomates", "🫒 Aceite de oliva"],
+                "Smoothie de frutas tropicales": ["🍌 Plátano", "🍍 Piña", "🥭 Mango", "🥛 Leche"],
+                "Empanadas venezolanas": ["🌽 Harina de maíz", "🥩 Carne", "🧀 Queso"],
+                "Cereal con leche": ["🥣 Cereal", "🥛 Leche"],
+                "Tortilla española": ["🥚 Huevos", "🥔 Patatas", "🫒 Aceite de oliva"],
+                "Pan con aguacate 🥑": ["🍞 Pan", "🥑 Aguacate"],
+                "Huevos revueltos con arepas": ["🥚 Huevos", "🌽 Harina de maíz"],
+                "Yogur con frutas y miel 🍯": ["🥛 Yogur", "🍓 Frutas", "🍯 Miel"],
+                "Batido de fresas 🍓": ["🍓 Fresas", "🥛 Leche"],
+                "Pancakes con sirope de arce 🥞": ["🥞 Mezcla para pancakes", "🍁 Sirope de arce"],
+                "Café con leche y tostadas ☕": ["☕ Café", "🥛 Leche", "🍞 Pan"],
+
+                // Comida
+                "Pabellón criollo": ["🍚 Arroz", "🫘 Frijoles", "🥩 Carne", "🍌 Plátano maduro"],
+                "Arroz a la cubana": ["🍚 Arroz", "🥚 Huevos", "🍌 Plátano"],
+                "Pollo al horno con papas": ["🍗 Pollo", "🥔 Papas", "🧄 Ajo", "🌿 Romero"],
+                "Lentejas con arroz 🍚": ["🫘 Lentejas", "🍚 Arroz", "🥕 Zanahorias"],
+                "Pollo guisado": ["🍗 Pollo", "🍅 Tomates", "🌶️ Pimientos"],
+                "Pasta con atún": ["🍝 Pasta", "🐟 Atún", "🍅 Salsa de tomate"],
+                "Ensalada mixta 🥗": ["🥬 Lechuga", "🍅 Tomate", "🥒 Pepino"],
+                "Sancocho venezolano": ["🥩 Carne", "🌽 Maíz", "🍠 Yuca"],
+                "Fideuá de marisco 🍤": ["🍝 Fideos", "🍤 Mariscos", "🍅 Tomate"],
+                "Carne mechada con arroz": ["🥩 Carne", "🍚 Arroz", "🌶️ Pimientos"],
+                "Guiso de garbanzos": ["🫘 Garbanzos", "🥕 Zanahorias", "🍅 Tomate"],
+                "Pescado al horno con verduras 🐟": ["🐟 Pescado", "🥦 Brócoli", "🥕 Zanahorias"],
+
+                // Merienda
+                "Frutas frescas (mango, plátano, manzana)": ["🍎 Manzana", "🍌 Plátano", "🥭 Mango"],
+                "Nueces y almendras": ["🌰 Nueces", "🌰 Almendras"],
+                "Galletas de avena": ["🌾 Avena", "🧈 Mantequilla", "🧂 Azúcar"],
+                "Yogur con granola": ["🥛 Yogur", "🌾 Granola"],
+                "Tostadas con mermelada": ["🍞 Pan", "🍓 Mermelada"],
+                "Arepitas dulces": ["🌽 Harina de maíz", "🧂 Azúcar"],
+                "Batido de frutas": ["🍌 Plátano", "🍓 Fresas", "🥛 Leche"],
+                "Barra de cereal": ["🌾 Barras de cereal"],
+                "Palitos de zanahoria con hummus 🥕": ["🥕 Zanahorias", "🥣 Hummus"],
+                "Smoothie verde 🍏": ["🥬 Espinaca", "🍏 Manzana", "🥝 Kiwi"],
+                "Churros con chocolate 🍫": ["🥖 Churros", "🍫 Chocolate"],
+                "Queso fresco con miel": ["🧀 Queso fresco", "🍯 Miel"],
+
+                // Cena
+                "Sopa de pollo con fideos": ["🍗 Pollo", "🍜 Fideos", "🥕 Zanahoria", "🌿 Apio"],
+                "Tortilla de patatas": ["🥚 Huevos", "🥔 Patatas", "🫒 Aceite de oliva"],
+                "Arepas rellenas de pollo": ["🌽 Harina de maíz", "🍗 Pollo"],
+                "Ensalada de atún": ["🐟 Atún", "🥬 Lechuga", "🍅 Tomate"],
+                "Sandwich mixto 🥪": ["🍞 Pan", "🥓 Jamón", "🧀 Queso"],
+                "Pasta con verduras": ["🍝 Pasta", "🥦 Brócoli", "🥕 Zanahoria"],
+                "Crema de calabacín": ["🥒 Calabacín", "🧅 Cebolla", "🥔 Patata", "🫒 Aceite"],
+                "Omelette de champiñones 🍄": ["🥚 Huevos", "🍄 Champiñones"],
+                "Sopa de tomate": ["🍅 Tomates", "🧅 Cebolla", "🧄 Ajo"],
+                "Papas al horno con queso 🧀": ["🥔 Papas", "🧀 Queso"],
+                "Ensalada César": ["🥬 Lechuga", "🍗 Pollo", "🧀 Queso parmesano"],
+                "Tostadas con aguacate y salmón": ["🍞 Pan", "🥑 Aguacate", "🐟 Salmón ahumado"]
+            };
+
+            const menuTable = document.getElementById("menuTable");
+            const generateBtn = document.getElementById("generateBtn");
+            const clearBtn = document.getElementById("clearBtn");
+            const printBtn = document.getElementById("printBtn");
+            const shoppingList = document.getElementById("shoppingList");
+
+            // Función para ajustar la altura automáticamente según el contenido
+            function adjustTextareaHeight(textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = `${textarea.scrollHeight}px`;
+            }
+
+            function getRandomSuggestion(type) {
+                let availableSuggestions = [...suggestions[type]];
+                let randomSuggestions = [];
+                for (let i = 0; i < 7; i++) {
+                    if (availableSuggestions.length < 2) {
+                        availableSuggestions = [...suggestions[type]];
+                    }
+                    const randomIndex1 = Math.floor(Math.random() * availableSuggestions.length);
+                    const suggestion1 = availableSuggestions.splice(randomIndex1, 1)[0];
+                    const randomIndex2 = Math.floor(Math.random() * availableSuggestions.length);
+                    const suggestion2 = availableSuggestions.splice(randomIndex2, 1)[0];
+                    randomSuggestions.push(`${suggestion1} / ${suggestion2}`);
+                }
+                return randomSuggestions;
+            }
+
+            function updateShoppingList(selectedDishes) {
+                const itemsMap = new Map();
+                selectedDishes.forEach(dish => {
+                    if (shoppingItems[dish]) {
+                        shoppingItems[dish].forEach(item => {
+                            itemsMap.set(item, item);
+                        });
+                    }
+                });
+                shoppingList.innerHTML = '';
+                itemsMap.forEach(item => {
+                    const div = document.createElement('div');
+                    div.classList.add('shopping-item');
+                    div.innerHTML = `<input type="checkbox">${item}`;
+                    shoppingList.appendChild(div);
+                });
+            }
+
+            generateBtn.addEventListener("click", () => {
+                const rows = ["desayuno", "comida", "merienda", "cena"];
+                const days = 7;
+                let selectedDishes = [];
+                rows.forEach((row, rowIndex) => {
+                    const randomSuggestions = getRandomSuggestion(row);
+                    for (let i = 0; i < days; i++) {
+                        const dish = randomSuggestions[i];
+                        const textarea = menuTable.rows[rowIndex].cells[i + 1].querySelector("textarea");
+                        textarea.value = dish;
+                        adjustTextareaHeight(textarea); // Ajustar altura según el contenido
+                        selectedDishes = selectedDishes.concat(dish.split(' / '));
+                    }
+                });
+                updateShoppingList(selectedDishes);
+            });
+
+            clearBtn.addEventListener("click", () => {
+                const textareas = document.querySelectorAll("textarea");
+                textareas.forEach(textarea => {
+                    textarea.value = "";
+                    adjustTextareaHeight(textarea);
+                });
+                shoppingList.innerHTML = "";
+            });
+
+            printBtn.addEventListener("click", () => {
+                window.print();
+            });
+
+            // Ajustar la altura de los textarea al cargar la página
+            document.addEventListener("DOMContentLoaded", () => {
+                const textareas = document.querySelectorAll("textarea");
+                textareas.forEach(textarea => adjustTextareaHeight(textarea));
+            });
+        </script>
+    </div>
+</body>
+</html>
