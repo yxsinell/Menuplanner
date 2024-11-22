@@ -16,3 +16,11 @@ The main goal is to use advanced QA tools and techniques to ensure the quality a
 - Effective management of testing in complex environments, applying a collaborative approach to ensure product quality and functionality.
 - Development and improvement of skills in scenario-based and regression testing, validating changes without compromising system integrity.
 - Optimization of AI usage in software development, applying prompt engineering to create and adjust functionalities rapidly.
+
+##  Deliverables
+Functional Test Results: A document summarizing the execution and results of all functional test cases.
+BUG Report: Detailed documentation of any defects found during testing, including severity, steps to reproduce, and resolution.
+Regression Test Execution Report: A report outlining the results of regression tests executed at the end of each sprint.
+
+## AUTHOR
+Acosta Zambrano Yxsinell, QA Jr. LinkedIn Profile
